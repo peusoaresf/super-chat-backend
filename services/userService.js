@@ -9,12 +9,12 @@ const {
 const { getChatIdForNewFriends } = require('./chatService')
 
 const userSignup = async (username, password) => {
-    if (await findUserByUsername(username)) {
-        throw new Error('Username already in use')
-    }
-    if (!username || !password) {
+	if (!username || !password) {
         throw new Error('Username and password are required')
     }
+    if (await findUserByUsername(username)) {
+        throw new Error('Username already in use')
+    }    
     await createUser(username, password)
 }
 
