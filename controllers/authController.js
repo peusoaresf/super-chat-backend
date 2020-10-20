@@ -20,7 +20,7 @@ router.post('/signin', async (req, res, next) => {
     const { password, ...otherProps } = await userSignin(req.body.username, req.body.password)
 
     jwt.sign({ user: otherProps }, process.env.SECRET, {
-      expiresIn: 300
+      expiresIn: '9999 years'
     }, (err, token) => {
       if (err) {
         return next(err)
