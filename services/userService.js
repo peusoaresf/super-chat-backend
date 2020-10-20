@@ -1,3 +1,4 @@
+const { sign } = require('jsonwebtoken')
 const {
   updateUser,
   findUserById,
@@ -22,9 +23,18 @@ const userSignin = async (username, password) => {
   if (!username || !password) {
     throw new Error('Username and password are required')
   }
-  if (!(await findUserByUsernameAndPassword(username, password))) {
+
+  const user = await findUserByUsername(username)
+
+  if (!user || !hasCorrectPassword(user, password)) {
     throw new Error('incorrect username or password')
   }
+
+  return user
+}
+
+const hasCorrectPassword = (user, password) => {
+  return user.password === password
 }
 
 const addUserFriendByUsername = async (userId, friendUsername) => {
