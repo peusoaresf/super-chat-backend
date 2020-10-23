@@ -1,10 +1,8 @@
-const { sign } = require('jsonwebtoken')
 const {
   updateUser,
   findUserById,
   findUserByUsername,
-  createUser,
-  findUserByUsernameAndPassword
+  createUser
 } = require('../repositories/userRepository')
 
 const { getChatIdForNewFriends } = require('./chatService')
@@ -55,7 +53,7 @@ const addUserFriendByUsername = async (userId, friendUsername) => {
 
   user.chats.push(chatId)
 
-  updateUser(user)
+  await updateUser(user)
 }
 
 module.exports = {

@@ -9,8 +9,8 @@ router.get('/chat/subscribe', verifyJWTQueryString, async (req, res, next) => {
   try {
     var client = new ChatClient(req.user.id, res)
 
-    client.onClose(() => {
-      disconnectChatClient(client.id)
+    client.onClose(async () => {
+      await disconnectChatClient(client.id)
     })
 
     await connectChatClient(client)
