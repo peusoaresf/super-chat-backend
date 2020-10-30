@@ -4,21 +4,19 @@ const { addUserFriendByUsername } = require('../services/userService')
 const router = express.Router()
 
 router.get('/user/details', (req, res) => {
-    res.json({
-        result: req.user
-    })
+  res.json(req.user)
 })
 
 router.post('/user/addFriend', async (req, res, next) => {
-    try {
-        await addUserFriendByUsername(req.user.id, req.body.friendUsername)
+  try {
+    await addUserFriendByUsername(req.user.id, req.body.friendUsername)
 
-        res.json({
-            result: 'success'
-        })
-    } catch (e) {
-        next(e)
-    }
+    res.json({
+      result: 'success'
+    })
+  } catch (e) {
+    next(e)
+  }
 })
 
 module.exports = router
