@@ -1,6 +1,6 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
-const { userSignup, userSignin } = require('../services/userService')
+const { userSignup, userSignin } = require('../services/authService')
 
 const router = express.Router()
 
