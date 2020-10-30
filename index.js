@@ -7,9 +7,10 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
-app.use(api)
 
-app.use((err, req, res, next) => {  
+api(app)
+
+app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     error: {
       message: err.message

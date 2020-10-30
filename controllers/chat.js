@@ -5,7 +5,7 @@ const { connectChatClient, disconnectChatClient, sendChatMessage } = require('..
 
 const router = express.Router();
 
-router.get('/chat/subscribe', verifyJWTQueryString, async (req, res, next) => {
+router.get('/subscribe', verifyJWTQueryString, async (req, res, next) => {
   try {
     var client = new ChatClient(req.user.id, res)
 
@@ -19,7 +19,7 @@ router.get('/chat/subscribe', verifyJWTQueryString, async (req, res, next) => {
   }
 })
 
-router.post('/chat/sendMessage', verifyJWT, async (req, res, next) => {
+router.post('/sendMessage', verifyJWT, async (req, res, next) => {
   try {
     await sendChatMessage(req.body.chatId, req.body.text)
 

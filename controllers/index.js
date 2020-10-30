@@ -1,14 +1,54 @@
-const express = require('express')
-const { verifyJWT } = require('../middlewares/authMiddleware')
+const fs = require('fs')
+const path = require('path')
 
-const authController = require('./authController')
-const userController = require('./userController')
-const chatController = require('./chatController')
+const currentFolder = __dirname.split(path.sep).slice(-1)[0]
 
-const router = express.Router()
+const isDirectory = fullPath => fs.statSync(fullPath).isDirectory()
+const getDirectories = fullPath =>
+  fs.readdirSync(fullPath).map(name => path.join(fullPath, name)).filter(isDirectory)
 
-router.use('/auth', authController)
-router.use('/api', chatController)
-router.use('/api', verifyJWT, userController)
+const isFile = fullPath => fs.statSync(fullPath).isFile()
+const getFiles = fullPath =>
+  fs.readdirSync(fullPath).map(name => path.join(fullPath, name)).filter(isFile)
 
-module.exports = router
+const getFilesRecursively = (fullPath) => {
+  let dirs = getDirectories(fullPath)
+  let files = dirs
+    .map(dir => getFilesRecursively(dir)) // go through each directory
+    .reduce((a, b) => a.concat(b), [])     // map returns a 2d array (array of file arrays) so flatten
+  return files.concat(getFiles(fullPath))
+};
+
+module.exports = (server) => {
+  const files = getFilesRecursively(__dirname)
+
+  files
+    .filter(file => {
+      return (file.indexOf('.') !== 0)
+        && (!file.startsWith('_'))
+        && (file !== __filename)
+        && (file.slice(-3) === '.js')
+    })
+    .forEach(file => {
+      var router = require(file)
+
+      var endpoint = '/' + file.substring(file.indexOf(currentFolder) + (currentFolder.length + 1), file.length).split(path.sep).join('/').replace('.js', '')
+
+      server.use(endpoint, router)
+    })
+}
+
+// const express = require('express')
+// const { verifyJWT } = require('../middlewares/authMiddleware')
+
+// const authController = require('./authController')
+// const userController = require('./userController')
+// const chatController = require('./chatController')
+
+// const router = express.Router()
+
+// router.use('/auth', authController)
+// router.use('/chat', chatController)
+// router.use('/user', verifyJWT, userController)
+
+// module.exports = router
