@@ -35,11 +35,11 @@ const disconnectChatClient = async (clientId) => {
 }
 
 const sendChatMessage = async (chatId, messageText) => {
-  const chat = await findChatById(chatId)
-
   if (!chatId || !messageText) {
     throw new ValidationError('Chat ID and Message text are required')
   }
+
+  const chat = await findChatById(chatId)
 
   if (!chat) {
     throw new ChatNotFoundError()
