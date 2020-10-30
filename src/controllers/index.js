@@ -37,18 +37,3 @@ module.exports = (server) => {
       server.use(endpoint, router)
     })
 }
-
-// const express = require('express')
-// const { verifyJWT } = require('../middlewares/authMiddleware')
-
-// const authController = require('./authController')
-// const userController = require('./userController')
-// const chatController = require('./chatController')
-
-// const router = express.Router()
-
-// router.use('/auth', authController)
-// router.use('/chat', chatController)
-// router.use('/user', verifyJWT, userController)
-
-// module.exports = router
