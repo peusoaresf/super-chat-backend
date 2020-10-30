@@ -5,6 +5,8 @@ const UsernameNotFoundError = require('./UsernameNotFoundError')
 const ChatNotFoundError = require('./ChatNotFoundError')
 const UnauthorizedError = require('./UnauthorizedError')
 const InvalidAuthTokenError = require('./InvalidAuthTokenError')
+const RouteNotFoundError = require('./RouteNotFoundError')
+
 
 module.exports = {
   ValidationError,
@@ -13,5 +15,6 @@ module.exports = {
   UsernameNotFoundError,
   ChatNotFoundError,
   UnauthorizedError,
-  InvalidAuthTokenError
+  InvalidAuthTokenError,
+  RouteNotFoundError
 }
