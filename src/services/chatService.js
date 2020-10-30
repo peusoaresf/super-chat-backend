@@ -1,3 +1,4 @@
+const { ValidationError, ChatNotFoundError } = require('../errors')
 const { createChat, findChatById, findChatBySubscribers } = require('../repositories/chatRepository')
 const { createOfflineMessage, findOfflineMessagesByUserId, deleteOfflineMessagesByUserId } = require('../repositories/messageRepository')
 
@@ -35,6 +36,14 @@ const disconnectChatClient = async (clientId) => {
 
 const sendChatMessage = async (chatId, messageText) => {
   const chat = await findChatById(chatId)
+
+  if (!chatId || !messageText) {
+    throw new ValidationError('Chat ID and Message text are required')
+  }
+
+  if (!chat) {
+    throw new ChatNotFoundError()
+  }
 
   chat.subscribers.forEach(async subscriberId => {
     let client = clients[subscriberId]

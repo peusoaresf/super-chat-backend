@@ -1,21 +1,17 @@
-const {
-  updateUser,
-  findUserById,
-  findUserByUsername
-} = require('../repositories/userRepository')
-
 const { getChatIdForNewFriends } = require('./chatService')
+const { ValidationError, UsernameNotFoundError } = require('../errors')
+const { updateUser, findUserById, findUserByUsername } = require('../repositories/userRepository')
 
 const addUserFriendByUsername = async (userId, friendUsername) => {
   if (!friendUsername) {
-    throw new Error('Friend username is required')
+    throw new ValidationError('Friend username is required')
   }
 
   const user = await findUserById(userId)
   const friend = await findUserByUsername(friendUsername)
 
   if (!friend) {
-    throw new Error('Friend username is not found')
+    throw new UsernameNotFoundError()
   }
 
   user.friends.push(friend.id)

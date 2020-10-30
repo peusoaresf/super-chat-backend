@@ -11,10 +11,12 @@ app.use(express.json())
 api(app)
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({
-    error: {
-      message: err.message
-    }
+  const status = err.status || 500
+
+  res.status(status).json({
+    name: err.name || 'UnknownError',
+    status: status,
+    message: err.message
   })
 })
 

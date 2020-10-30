@@ -1,34 +1,35 @@
 const jwt = require('jsonwebtoken')
+const { UnauthorizedError, InvalidAuthTokenError } = require('../errors')
 
 const verify = (req, res, next, token) => {
-    if (!token) {
-        return res.status(401).json({ auth: false, message: 'No token provided.' })
+  if (!token) {
+    return next(new UnauthorizedError())
+  }
+
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    if (err) {
+      return next(new InvalidAuthTokenError())
     }
-    
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' })
-        } 
 
-        req.user = decoded.user
+    req.user = decoded.user
 
-        next()
-    })
+    next()
+  })
 }
 
 const verifyJWT = (req, res, next) => {
-    const token = req.headers['x-access-token']
+  const token = req.headers['x-access-token']
 
-    verify(req, res, next, token)
+  verify(req, res, next, token)
 }
 
 const verifyJWTQueryString = (req, res, next) => {
-    const token = req.query['x-access-token']
+  const token = req.query['x-access-token']
 
-    verify(req, res, next, token)
+  verify(req, res, next, token)
 }
 
 module.exports = {
-    verifyJWT,
-    verifyJWTQueryString
+  verifyJWT,
+  verifyJWTQueryString
 }
