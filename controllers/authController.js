@@ -4,11 +4,32 @@ const { userSignup, userSignin } = require('../services/userService')
 
 const router = express.Router()
 
+const generateJwt = (props) => {
+  return new Promise((resolve, reject) => {
+    jwt.sign({ user: props }, process.env.SECRET, {
+      expiresIn: '9999 years'
+    }, (err, token) => {
+      if (err) {
+        return reject(err)
+      }
+
+      resolve(token)
+    })
+  })
+}
+
 router.post('/signup', async (req, res, next) => {
   try {
     await userSignup(req.body.username, req.body.password)
 
-    res.redirect(307, '/auth/signin')
+    const { password, ...otherProps } = await userSignin(req.body.username, req.body.password)
+
+    const token = await generateJwt(otherProps)
+
+    res.json({
+      auth: true,
+      token
+    })
   } catch (e) {
     next(e)
   }
@@ -16,20 +37,13 @@ router.post('/signup', async (req, res, next) => {
 
 router.post('/signin', async (req, res, next) => {
   try {
-
     const { password, ...otherProps } = await userSignin(req.body.username, req.body.password)
 
-    jwt.sign({ user: otherProps }, process.env.SECRET, {
-      expiresIn: '9999 years'
-    }, (err, token) => {
-      if (err) {
-        return next(err)
-      }
+    const token = await generateJwt(otherProps)
 
-      res.json({
-        auth: true,
-        token
-      })
+    res.json({
+      auth: true,
+      token
     })
   } catch (e) {
     next(e)
